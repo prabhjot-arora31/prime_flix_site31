@@ -494,7 +494,7 @@ export default function VideoPlayer({
 
       {/* Bottom controls */}
       <div
-        className={`absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 to-transparent px-5 pt-16 pb-5 transition-opacity duration-200 ${
+        className={`absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 to-transparent px-3 pt-16 pb-4 transition-opacity duration-200 sm:px-5 sm:pb-5 ${
           controlsVisible ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -524,12 +524,12 @@ export default function VideoPlayer({
           </div>
         </div>
 
-        <div className="flex items-center gap-5 text-white">
-          <button onClick={togglePlay} className="text-white">
-            {playing ? <PauseIcon className="h-8 w-8" /> : <PlayIcon className="h-8 w-8" />}
+        <div className="flex items-center gap-2 text-white sm:gap-5">
+          <button onClick={togglePlay} className="shrink-0 text-white">
+            {playing ? <PauseIcon className="h-7 w-7 sm:h-8 sm:w-8" /> : <PlayIcon className="h-7 w-7 sm:h-8 sm:w-8" />}
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="hidden shrink-0 items-center gap-2 sm:flex">
             <button onClick={toggleMute} className="text-white">
               {muted || volume === 0 ? <MuteIcon className="h-6 w-6" /> : <VolumeIcon className="h-6 w-6" />}
             </button>
@@ -545,20 +545,24 @@ export default function VideoPlayer({
             />
           </div>
 
-          <span className="text-sm text-white/80 tabular-nums">
+          <button onClick={toggleMute} className="shrink-0 text-white sm:hidden">
+            {muted || volume === 0 ? <MuteIcon className="h-6 w-6" /> : <VolumeIcon className="h-6 w-6" />}
+          </button>
+
+          <span className="shrink-0 whitespace-nowrap text-xs text-white/80 tabular-nums sm:text-sm">
             {formatTime(currentTime)} / {formatTime(duration)}
           </span>
 
-          <div className="relative ml-auto flex items-center gap-4">
+          <div className="relative ml-auto flex shrink-0 items-center gap-2 sm:gap-4">
             {(audioOptions.length > 1 || streams.length > 1 || subtitles.length > 0) && (
               <button
                 onClick={() => setSettingsView(settingsView ? null : "root")}
-                className="flex items-center gap-2 rounded-md bg-white/10 px-4 py-2.5 text-sm font-medium hover:bg-white/20"
+                className="flex items-center gap-1.5 rounded-md bg-white/10 px-2.5 py-2 text-sm font-medium hover:bg-white/20 sm:gap-2 sm:px-4 sm:py-2.5"
               >
-                <GearIcon className="h-5 w-5" /> Settings
+                <GearIcon className="h-5 w-5" /> <span className="hidden sm:inline">Settings</span>
               </button>
             )}
-            <button onClick={toggleFullscreen} className="text-white">
+            <button onClick={toggleFullscreen} className="shrink-0 text-white">
               <FullscreenIcon className="h-6 w-6" />
             </button>
 
