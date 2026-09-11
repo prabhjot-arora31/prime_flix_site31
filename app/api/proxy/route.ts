@@ -1,5 +1,16 @@
 import { NextRequest } from "next/server";
-import { globalUserAgent } from "@/lib/apiConfig";
+
+// Edge runtime uses a different outbound IP pool than Vercel's Node.js
+// serverless functions — worth trying since the video CDN (BunnyCDN) blocks
+// the serverless pool's datacenter IPs outright (426) while allowing
+// requests from residential IPs. Edge Runtime has no filesystem access, so
+// this route can't go through lib/remoteConfig.ts's file-cached
+// globalUserAgent() — a plain hardcoded fallback UA is used directly
+// instead (same string as apiConfig.ts's own fallback).
+export const runtime = "edge";
+
+const FALLBACK_USER_AGENT =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36";
 
 // Streams a remote video/subtitle file back through our own origin, with a
 // server-controlled Referer — the CDN behind MovieBox's fast-download links
@@ -47,7 +58,7 @@ export async function GET(req: NextRequest) {
   const upstream = await fetch(target, {
     headers: {
       accept: "*/*",
-      "user-agent": await globalUserAgent(),
+      "user-agent": FALLBACK_USER_AGENT,
       ...(referer ? { referer } : {}),
       ...(range ? { range } : {}),
     },
