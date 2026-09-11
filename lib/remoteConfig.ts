@@ -13,6 +13,7 @@
 // lib/firebase_options.dart / android/app/google-services.json.
 
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 const PROJECT_NUMBER = "887317405460";
@@ -22,7 +23,10 @@ const PACKAGE_NAME = "com.primeflix.app";
 
 const FETCH_URL = `https://firebaseremoteconfig.googleapis.com/v1/projects/${PROJECT_NUMBER}/namespaces/firebase:fetch?key=${API_KEY}`;
 
-const CACHE_PATH = path.join(process.cwd(), ".remote-config.json");
+// os.tmpdir(), not process.cwd() — the project directory is read-only on
+// Vercel's deployment bundle (only /tmp is writable there), and this cache
+// is disposable either way (lost on every cold start).
+const CACHE_PATH = path.join(os.tmpdir(), "prime-flix-remote-config.json");
 const REFRESH_INTERVAL_MS = 60 * 60 * 1000; // re-fetch at most once an hour
 
 type CacheShape = { config: Record<string, string>; timestampMs: number };

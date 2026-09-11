@@ -11,6 +11,7 @@
 // domains rotate over time.
 
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import {
   globalUserAgent,
@@ -40,7 +41,12 @@ const CHANNEL_IDS: Record<ContentChannel, number> = { series: 2, anime: 1006 };
 // auth required to get it — so this just fetches home once and reuses that
 // token, cached to disk (mirrors the "90 day" validity of the master token)
 // until nearly its own expiry.
-const TOKEN_STORE_PATH = path.join(process.cwd(), ".moviebox-token.json");
+// os.tmpdir() rather than process.cwd() — the project directory is
+// read-only on Vercel's deployment bundle (only /tmp is writable there),
+// and this cache is disposable/ephemeral either way (lost on every cold
+// start), so there's no benefit to the project-directory path that /tmp
+// doesn't also give locally.
+const TOKEN_STORE_PATH = path.join(os.tmpdir(), "prime-flix-moviebox-token.json");
 const TOKEN_LIFETIME_MS = 80 * 24 * 60 * 60 * 1000; // 80 of the token's ~90 days
 
 async function getGuestToken(): Promise<string> {
@@ -59,7 +65,13 @@ async function getGuestToken(): Promise<string> {
   const match = setCookie ? /token=([^;]+)/.exec(setCookie) : null;
   if (!match) throw new Error("Could not obtain a MovieBox guest token");
 
-  fs.writeFileSync(TOKEN_STORE_PATH, JSON.stringify({ token: match[1], timestampMs: Date.now() }));
+  try {
+    fs.writeFileSync(TOKEN_STORE_PATH, JSON.stringify({ token: match[1], timestampMs: Date.now() }));
+  } catch {
+    // Read-only filesystem (e.g. Vercel's deployment bundle outside /tmp) —
+    // the disk cache is just an optimization to skip re-fetching the token
+    // on every request; the token we just got is still perfectly usable.
+  }
   return match[1];
 }
 
