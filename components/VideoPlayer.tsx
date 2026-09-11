@@ -400,6 +400,27 @@ export default function VideoPlayer({
     else el.requestFullscreen().catch(() => {});
   }
 
+  // Force landscape while fullscreen, on the mobile browsers that support the
+  // Screen Orientation lock API (Chrome/Android) — reacts to fullscreenchange
+  // rather than only the button click so it also covers exiting via the
+  // system back gesture/Esc. iOS Safari doesn't implement this API at all
+  // (no web-standard way to force landscape there), so it silently no-ops
+  // and the user still has to rotate manually with auto-rotate on.
+  useEffect(() => {
+    function onFullscreenChange() {
+      const orientation = screen.orientation as ScreenOrientation & {
+        lock?: (o: string) => Promise<void>;
+      };
+      if (document.fullscreenElement === containerRef.current) {
+        orientation.lock?.("landscape").catch(() => {});
+      } else {
+        orientation.unlock?.();
+      }
+    }
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
+  }, []);
+
   function changeSpeed(rate: number) {
     const video = videoRef.current;
     if (video) video.playbackRate = rate;
