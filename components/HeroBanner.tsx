@@ -3,6 +3,7 @@
 import Link from "next/link";
 import ScrollRow from "./ScrollRow";
 import { PlayIcon } from "./icons";
+import LinkPendingOverlay from "./LinkPendingOverlay";
 import type { MovieBoxItem } from "@/lib/movieBox";
 
 export default function HeroBanner({ items }: { items: MovieBoxItem[] }) {
@@ -43,6 +44,7 @@ export default function HeroBanner({ items }: { items: MovieBoxItem[] }) {
               <PlayIcon className="h-4 w-4" /> Play
             </span>
           </div>
+          <LinkPendingOverlay rounded="" />
         </Link>
       ))}
     </ScrollRow>

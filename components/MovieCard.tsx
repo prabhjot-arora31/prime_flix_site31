@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FilmIcon } from "./icons";
+import LinkPendingOverlay from "./LinkPendingOverlay";
 
 export default function MovieCard({
   title,
@@ -51,6 +52,7 @@ export default function MovieCard({
         <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/50 to-transparent p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
           <p className="line-clamp-2 text-xs font-medium text-white">{title}</p>
         </div>
+        <LinkPendingOverlay />
       </div>
     </Link>
   );

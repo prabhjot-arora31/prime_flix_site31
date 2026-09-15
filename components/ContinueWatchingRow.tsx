@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ContinueWatchingEntry, listContinueWatching } from "@/lib/clientStorage";
 import ScrollRow from "./ScrollRow";
 import { PlayIcon } from "./icons";
+import LinkPendingOverlay from "./LinkPendingOverlay";
 
 export default function ContinueWatchingRow() {
   const [entries, setEntries] = useState<ContinueWatchingEntry[]>([]);
@@ -43,6 +44,7 @@ export default function ContinueWatchingRow() {
                 <div className="absolute inset-x-0 bottom-0 h-1 bg-black/50">
                   <div className="h-full bg-accent" style={{ width: `${Math.min(fraction * 100, 100)}%` }} />
                 </div>
+                <LinkPendingOverlay />
               </div>
               <p className="mt-1.5 line-clamp-1 text-xs font-medium text-white/90">
                 {entry.title}

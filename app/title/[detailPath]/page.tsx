@@ -251,11 +251,9 @@ export default function MovieBoxDetailPage() {
       <div className="mx-auto -mt-12 max-w-5xl px-4 pb-16 sm:-mt-20 sm:px-6">
         <div className="flex gap-4 sm:gap-6">
           {data.poster && (
-            <img
-              src={data.poster}
-              alt=""
-              className="aspect-2/3 w-24 shrink-0 rounded-lg object-cover shadow-2xl shadow-black/60 sm:w-40"
-            />
+            <div className="h-36 w-24 shrink-0 overflow-hidden rounded-lg shadow-2xl shadow-black/60 sm:h-60 sm:w-40">
+              <img src={data.poster} alt="" className="h-full w-full object-cover" />
+            </div>
           )}
           <div className="min-w-0 flex-1 pt-8 sm:pt-16">
             <h1 className="text-xl font-bold text-white drop-shadow sm:text-3xl">{data.title}</h1>

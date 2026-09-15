@@ -43,7 +43,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={null}>
           <NavBar />
         </Suspense>
-        {children}
+        {/* min-w-0 overrides the flex item default of min-width:auto — without
+            it, a horizontally-scrolling row (e.g. Related People) with wide
+            unwrapped content forces this whole flex item (and so the entire
+            page) wider than the viewport instead of just scrolling within
+            its own bounds. */}
+        <main className="min-w-0 flex-1">{children}</main>
       </body>
     </html>
   );
